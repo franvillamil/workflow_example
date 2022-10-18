@@ -1,0 +1,50 @@
+\documentclass[notitlepage]{article}
+\usepackage[margin = 2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx, dcolumn}
+
+\usepackage{booktabs}
+\usepackage{siunitx}
+\newcolumntype{d}{S[input-symbols = ()]}
+
+\title{Document 1}
+\author{Me}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\clearpage
+\section{Plots}
+
+In this document I show the main plots first, Figure~\ref{fig1} and Figure~\ref{fig2}:
+
+% ----------------------------------------------------
+\begin{figure*}[htb!]
+  \centering
+
+  \includegraphics[width = 0.5\textwidth]{../plots/output/histogram}
+
+  \caption{Histogram}\label{fig1}
+\end{figure*}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{figure*}[htb!]
+  \centering
+
+  \includegraphics[width = 0.5\textwidth]{../plots/output/scatterplot}
+
+  \caption{Scatter}\label{fig2}
+\end{figure*}
+% ----------------------------------------------------
+
+\clearpage
+\section{Models}
+
+And then I show the table with the models results:
+
+\input{../analyses/output/table_models.tex}
+
+\end{document}

@@ -1,0 +1,824 @@
+setwd("~/Documents/Projects/cuarteles_militares")#
+options(stringsAsFactors = FALSE)#
+# List of packages#
+pkg = c("modelsummary", "kableExtra", "dplyr", "ggplot2")#
+# Checks if they are installed, install if not#
+if (length(setdiff(pkg, rownames(installed.packages()))) > 0) {#
+  install.packages(setdiff(pkg, rownames(installed.packages())))}#
+# Load#
+lapply(pkg, library, character.only = TRUE)#
+# --------------------------------------------------
+# Label models (for modelsummary)#
+modnames = function(l){#
+  names(l) = paste0("(", 1:length(l), ")")#
+  return(l)#
+}#
+#
+coef_recode = c(#
+  'army' = 'Military facility in 2021',#
+  'cuartel_lost' = 'Facility in 1920 but abandoned',#
+  'cuartel_lost_na' = 'Facility in 1920 but abandoned',#
+  'c1920_bin' = 'Military facility in 1920',#
+  'VOX_a19' = 'VOX share (April 2019)',#
+  'pop_2017_l' = '(Log) Population, 2017',#
+  'muni_pop_2017_l' = '(Log) Municipality pop, 2017',#
+  'renta_h_2017_l' = '(Log) Household income, 2017',#
+  'pop_chg_3091' = 'Pop. change, 1930-1991 (municipality)',#
+  'region_militar_franc' = 'Military region HQ'#
+)#
+#
+gs = list(#
+  list("raw" = "nobs", "clean" = "$n$", "fmt" = 0),#
+  list("raw" = "r.squared", "clean" = "$R^2$", "fmt" = 2),#
+  list("raw" = "adj.r.squared", "clean" = "Adj. $R^2$", "fmt" = 2),#
+  list("raw" = "aic", "clean" = "AIC", "fmt" = 1))#
+#
+n = "+ p $<$ 0.1, * p $<$ 0.05, ** p $<$ 0.01, *** p $<$ 0.001. Province FE not shown."#
+#
+# --------------------------------------------------#
+#
+# Load data, remove non-existing secciones#
+data = read.csv("create_dataset/output/dataset.csv") %>%#
+  filter(!is.na(pop_2017)) %>%#
+  ## Variable creation: cuarteles in 1920, lost, etc#
+  mutate(#
+    cuartel_lost = ifelse(cuarteles1920 > 0 & army == 0, 1, 0),#
+    c1920_bin = ifelse(cuarteles1920 > 0, 1, 0),#
+    cuartel_1920_or_now = ifelse(cuarteles1920 > 0 | army == 1, 1, 0)) %>%#
+  mutate(cuartel_lost_na = ifelse(cuarteles1920 == 0, NA, cuartel_lost))#
+#
+#################################################################
+## NOTE remote later ###
+r5 = c("huesca", "zaragoza", "teruel", "castellon", "guadalajara", "soria")#
+r4 = c("barcelona", "girona", "huesca", "lleida")#
+r3 = c("valencia", "alicante", "albacete", "murcia", "almeria")#
+r1 = c("madrid", "toledo", "ciudad real", "cuenca", "badajoz", "jaen")#
+data = subset(data, prov %in% c(r1, r3, r4, r5))#
+#################################################################
+#
+### NOTE!!! be careful when including pop_chg_3091, missing data involved!#
+#
+### MODEL 1 - what explains losing cuarteles?#
+#
+m_cuartel_lost = modnames(list(#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc,#
+    data = data, family = "binomial"),#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + factor(prov),#
+    data = data, family = "binomial")#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + izq1936,#
+    data = data, family = "binomial"),#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + izq1936 + factor(prov),#
+    data = data, family = "binomial")#
+  ))
+m_cuartel_lost = modnames(list(#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc,#
+    data = data, family = "binomial"),#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + factor(prov),#
+    data = data, family = "binomial"),#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + izq1936,#
+    data = data, family = "binomial"),#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + izq1936 + factor(prov),#
+    data = data, family = "binomial")#
+  ))
+modelsummary(#
+  models = m_cuartel_lost,#
+  # output = "latex",#
+  # vcov = ~prov,#
+  estimate = "{estimate}{stars}")
+coef_recode = c(#
+  'army' = 'Military facility in 2021',#
+  'cuartel_lost' = 'Facility in 1920 but abandoned',#
+  'cuartel_lost_na' = 'Facility in 1920 but abandoned',#
+  'c1920_bin' = 'Military facility in 1920',#
+  'VOX_a19' = 'VOX share (April 2019)',#
+  'pop_2017_l' = '(Log) Population, 2017',#
+  'muni_pop_2017_l' = '(Log) Municipality pop, 2017',#
+  'renta_h_2017_l' = '(Log) Household income, 2017',#
+  'pop_chg_3091' = 'Pop. change, 1930-1991 (municipality)',#
+  'region_militar_franc' = 'Military region HQ',#
+  'dcha1936' = 'Rightist support, 1936'#
+)
+x=glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + izq1936,#
+    data = data, family = "binomial")
+summary(x)
+m_cuartel_lost = modnames(list(#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc,#
+    data = data, family = "binomial"),#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + factor(prov),#
+    data = data, family = "binomial"),#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + izq1936,#
+    data = data, family = "binomial"),#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + izq1936 + factor(prov),#
+    data = data, family = "binomial")#
+  ))
+modelsummary(#
+  models = m_cuartel_lost,#
+  # output = "latex",#
+  # vcov = ~prov,#
+  estimate = "{estimate}{stars}",#
+  coef_map = coef_recode,#
+  coef_omit = "prov",#
+  gof_map = gs,#
+  title = "Abandoned military facilities between 1920 and 2021\\label{tab:glm_c1920_lost}")
+m_cuartel_lost = modnames(list(#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc,#
+    data = data, family = "binomial"),#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + factor(prov),#
+    data = data, family = "binomial"),#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + dcha1936,#
+    data = data, family = "binomial"),#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + dcha1936 + factor(prov),#
+    data = data, family = "binomial")#
+  ))
+modelsummary(#
+  models = m_cuartel_lost,#
+  # output = "latex",#
+  # vcov = ~prov,#
+  estimate = "{estimate}{stars}",#
+  coef_map = coef_recode,#
+  coef_omit = "prov",#
+  gof_map = gs,#
+  title = "Abandoned military facilities between 1920 and 2021\\label{tab:glm_c1920_lost}")
+setwd("~/Documents/Projects/cuarteles_militares")#
+options(stringsAsFactors = FALSE)#
+# List of packages#
+pkg = c("modelsummary", "kableExtra", "dplyr", "ggplot2")#
+# Checks if they are installed, install if not#
+if (length(setdiff(pkg, rownames(installed.packages()))) > 0) {#
+  install.packages(setdiff(pkg, rownames(installed.packages())))}#
+# Load#
+lapply(pkg, library, character.only = TRUE)#
+# --------------------------------------------------#
+#
+## Modelsummary stuff#
+#
+# Label models (for modelsummary)#
+modnames = function(l){#
+  names(l) = paste0("(", 1:length(l), ")")#
+  return(l)#
+}#
+#
+coef_recode = c(#
+  'army' = 'Military facility in 2021',#
+  'cuartel_lost' = 'Facility in 1920 but abandoned',#
+  'cuartel_lost_na' = 'Facility in 1920 but abandoned',#
+  'c1920_bin' = 'Military facility in 1920',#
+  'VOX_a19' = 'VOX share (April 2019)',#
+  'pop_chg_3091' = 'Pop. change, 1930-1991 (municipality)',#
+  'pop_2017_l' = '(Log) Population, 2017',#
+  'region_militar_franc' = 'Military region HQ',#
+  'muni_pop_2017_l' = '(Log) Municipality pop, 2017',#
+  'renta_h_2017_l' = '(Log) Household income, 2017',#
+  'dcha1936' = 'Rightist support, 1936',#
+)#
+#
+gs = list(#
+  list("raw" = "nobs", "clean" = "$n$", "fmt" = 0),#
+  list("raw" = "r.squared", "clean" = "$R^2$", "fmt" = 2),#
+  list("raw" = "adj.r.squared", "clean" = "Adj. $R^2$", "fmt" = 2),#
+  list("raw" = "aic", "clean" = "AIC", "fmt" = 1))#
+#
+n = "+ p $<$ 0.1, * p $<$ 0.05, ** p $<$ 0.01, *** p $<$ 0.001. Province FE not shown."#
+#
+# --------------------------------------------------#
+#
+# Load data, remove non-existing secciones#
+data = read.csv("create_dataset/output/dataset.csv") %>%#
+  filter(!is.na(pop_2017)) %>%#
+  ## Variable creation: cuarteles in 1920, lost, etc#
+  mutate(#
+    cuartel_lost = ifelse(cuarteles1920 > 0 & army == 0, 1, 0),#
+    c1920_bin = ifelse(cuarteles1920 > 0, 1, 0),#
+    cuartel_1920_or_now = ifelse(cuarteles1920 > 0 | army == 1, 1, 0)) %>%#
+  mutate(cuartel_lost_na = ifelse(cuarteles1920 == 0, NA, cuartel_lost))#
+#
+#################################################################
+## NOTE remote later ###
+r5 = c("huesca", "zaragoza", "teruel", "castellon", "guadalajara", "soria")#
+r4 = c("barcelona", "girona", "huesca", "lleida")#
+r3 = c("valencia", "alicante", "albacete", "murcia", "almeria")#
+r1 = c("madrid", "toledo", "ciudad real", "cuenca", "badajoz", "jaen")#
+data = subset(data, prov %in% c(r1, r3, r4, r5))#
+#################################################################
+#
+### NOTE!!! be careful when including pop_chg_3091, missing data involved!#
+#
+### MODEL 1 - what explains losing cuarteles?#
+#
+m_cuartel_lost = modnames(list(#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc,#
+    data = data, family = "binomial"),#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + factor(prov),#
+    data = data, family = "binomial"),#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + dcha1936,#
+    data = data, family = "binomial"),#
+  glm(cuartel_lost_na ~ pop_2017_l + muni_pop_2017_l + pop_chg_3091 +#
+    renta_h_2017_l + region_militar_franc + dcha1936 + factor(prov),#
+    data = data, family = "binomial")#
+  ))#
+modelsummary(#
+  models = m_cuartel_lost,#
+  output = "latex",#
+  # vcov = ~prov,#
+  estimate = "{estimate}{stars}",#
+  coef_map = coef_recode,#
+  coef_omit = "prov",#
+  gof_map = gs,#
+  title = "Abandoned military facilities between 1920 and 2021\\label{tab:glm_c1920_lost}",#
+  add_rows = as.data.frame(rbind(#
+    c("Province FE", rep(c("No", "Yes"), length(m_cuartel_lost)/2) ))),#
+  threeparttable = TRUE) %>%#
+# add_header_above(c(" " = 1, "h1" = 2, "h2" = 2)) %>%#
+footnote(general = n, threeparttable = TRUE, footnote_as_chunk = TRUE, escape = FALSE) %>%#
+save_kable(file = "c1920_models/output/tab_c1920_lost.tex")
+m2a = lm(VOX_a19 ~ c1920_bin +#
+  part_a19 + pop_2017_l + renta_h_2017_l + muni_pop_2017_l + region_militar_franc + factor(prov),#
+  data = data)#
+m2b = lm(VOX_a19 ~ army +#
+  part_a19 + pop_2017_l + renta_h_2017_l + muni_pop_2017_l + region_militar_franc + factor(prov),#
+  data = data)#
+m2c = lm(VOX_a19 ~ cuartel_lost +#
+  part_a19 + pop_2017_l + renta_h_2017_l + muni_pop_2017_l + region_militar_franc + factor(prov),#
+  data = data)#
+m2d = lm(VOX_a19 ~ cuartel_lost_na +#
+  part_a19 + pop_2017_l + renta_h_2017_l + muni_pop_2017_l + region_militar_franc + factor(prov),#
+  data = data)#
+#
+stargazer(m2a, m2b, m2c, m2d, type="text")
+modelsummary(m2a, m2b, m2c, m2d, estimate = "{estimate}{stars}",#
+coef_map = coef_recode)
+m_vox_c1920 = modnames(list(#
+  lm(VOX_a19 ~ c1920_bin +#
+    part_a19 + pop_2017_l + renta_h_2017_l + muni_pop_2017_l + region_militar_franc + factor(prov),#
+    data = data),#
+  lm(VOX_a19 ~ army +#
+    part_a19 + pop_2017_l + renta_h_2017_l + muni_pop_2017_l + region_militar_franc + factor(prov),#
+    data = data),#
+  lm(VOX_a19 ~ cuartel_lost +#
+    part_a19 + pop_2017_l + renta_h_2017_l + muni_pop_2017_l + region_militar_franc + factor(prov),#
+    data = data),#
+  lm(VOX_a19 ~ cuartel_lost_na +#
+    part_a19 + pop_2017_l + renta_h_2017_l + muni_pop_2017_l + region_militar_franc + factor(prov),#
+    data = data)#
+  ))
+modelsummary(m_vox_c1920, estimate = "{estimate}{stars}", coef_map = coef_recode)
+coef_recode = c(#
+  'c1920_bin' = 'Military facility in 1920',#
+  'army' = 'Military facility in 2021',#
+  'cuartel_lost' = 'Facility in 1920 but abandoned',#
+  'cuartel_lost_na' = 'Facility in 1920 but abandoned',#
+  'VOX_a19' = 'VOX share (April 2019)',#
+  'pop_chg_3091' = 'Pop. change, 1930-1991 (municipality)',#
+  'pop_2017_l' = '(Log) Population, 2017',#
+  'region_militar_franc' = 'Military region HQ',#
+  'muni_pop_2017_l' = '(Log) Municipality pop, 2017',#
+  'renta_h_2017_l' = '(Log) Household income, 2017',#
+  'dcha1936' = 'Rightist support, 1936',#
+)
+coef_recode = c(#
+  'c1920_bin' = 'Military facility in 1920',#
+  'army' = 'Military facility in 2021',#
+  'cuartel_lost' = 'Facility in 1920 but abandoned',#
+  'cuartel_lost_na' = 'Facility in 1920 but abandoned',#
+  'VOX_a19' = 'VOX share (April 2019)',#
+  'pop_chg_3091' = 'Pop. change, 1930-1991 (municipality)',#
+  'pop_2017_l' = '(Log) Population, 2017',#
+  'region_militar_franc' = 'Military region HQ',#
+  'muni_pop_2017_l' = '(Log) Municipality pop, 2017',#
+  'renta_h_2017_l' = '(Log) Household income, 2017',#
+  'dcha1936' = 'Rightist support, 1936'#
+)
+modelsummary(m_vox_c1920, estimate = "{estimate}{stars}", coef_map = coef_recode)
+modelsummary(#
+  models = m_vox_c1920,#
+  output = "latex",#
+  # vcov = ~prov,#
+  estimate = "{estimate}{stars}",#
+  coef_map = coef_recode,#
+  coef_omit = "prov",#
+  gof_map = gs,#
+  title = "VOX support in 2019 and military presence at different periods\\label{tab:lm_c1920_vox}",#
+  add_rows = as.data.frame(rbind(#
+    c("Province FE", rep("Yes", length(m_vox_c1920)) ))),#
+  threeparttable = TRUE) %>%#
+# add_header_above(c(" " = 1, "h1" = 2, "h2" = 2)) %>%#
+footnote(general = n, threeparttable = TRUE, footnote_as_chunk = TRUE, escape = FALSE) %>%#
+save_kable(file = "c1920_models/output/tab_c1920_vox.tex")
+?footnote
+?kable_styling
+modelsummary(#
+  models = m_vox_c1920,#
+  output = "latex",#
+  # vcov = ~prov,#
+  estimate = "{estimate}{stars}",#
+  coef_map = coef_recode,#
+  coef_omit = "prov",#
+  gof_map = gs,#
+  title = "VOX support in 2019 and military presence at different periods\\label{tab:lm_c1920_vox}",#
+  add_rows = as.data.frame(rbind(#
+    c("Province FE", rep("Yes", length(m_vox_c1920)) ))),#
+  threeparttable = TRUE) %>%#
+# add_header_above(c(" " = 1, "h1" = 2, "h2" = 2)) %>%#
+footnote(general = n, threeparttable = TRUE, footnote_as_chunk = TRUE, escape = FALSE) %>%#
+kable_styling(latex_options = "hold_position")
+n_obs = 1000#
+#
+df = data.frame(#
+  var1 = rnorm(n = n_obs, mean = 5, sd = 2),#
+  var2 = rnorm(n = n_obs, mean = 300, sd = 50),#
+  var3 = rbinom(n = n_obs, size = 1, prob = 0.2)#
+)
+sf
+df
+# Working directory#
+setwd("~/Desktop/example_class")#
+#
+# Constants#
+n_obs = 1000#
+#
+# Create data#
+df = data.frame(#
+  var1 = rnorm(n = n_obs, mean = 5, sd = 2),#
+  var2 = rnorm(n = n_obs, mean = 300, sd = 50),#
+  var3 = rbinom(n = n_obs, size = 1, prob = 0.2)#
+)#
+#
+# Save data#
+write.csv(df, "create_data/output/data.csv")
+length(unique(df$var2))
+unique(df$var2)
+unique(df$var3)
+length(unique(df$var3))
+function_plot = function(data, xvar, yvar, plottype, file){#
+#
+  plottitle = paste("Plot of", xvar, "and", yvar)#
+#
+  if(plottype == "scatter"){#
+#
+  p = ggplot(data, aes(x = xvar, y = yvar)) +#
+    geom_point() +#
+    theme_bw() +#
+    labs(title = plottitle)#
+#
+  } else if (plottype == "histogram"){#
+#
+  if(length(unique(data[, xvar)]) != 2){warning("You are not using a binary xvar")}#
+#
+  p = ggplot(data, aes(x = xvar, y = yvar)) +#
+    geom_histogram() +#
+    theme_bw() +#
+    labs(title = plottitle)#
+#
+  } else {stop("You are using a wrong plottype: it must be 'scatter' or 'histogram'")}#
+#
+  # Save#
+  ggsave(file, p, width = 5, height = 5)#
+#
+}
+if(length(unique(data[, xvar)]) != 2){warning("You are not using a binary xvar")}
+# Working directory#
+setwd("~/Desktop/example_class")#
+#
+# Packages#
+library(ggplot2)#
+#
+# Function to make plots#
+function_plot = function(data, xvar, yvar, plottype, file){#
+#
+  plottitle = paste("Plot of", xvar, "and", yvar)#
+#
+  if(plottype == "scatter"){#
+#
+  p = ggplot(data, aes(x = xvar, y = yvar)) +#
+    geom_point() +#
+    theme_bw() +#
+    labs(title = plottitle)#
+#
+  } else if (plottype == "histogram"){#
+#
+  if(length(unique(data[, xvar])) != 2){warning("You are not using a binary xvar")}#
+#
+  p = ggplot(data, aes(x = xvar, y = yvar)) +#
+    geom_histogram() +#
+    theme_bw() +#
+    labs(title = plottitle)#
+#
+  } else {stop("You are using a wrong plottype: it must be 'scatter' or 'histogram'")}#
+#
+  # Save#
+  ggsave(file, p, width = 5, height = 5)#
+#
+}
+df = read.csv("create_data/output/data.csv")
+function_plot(df, xvar = "var2", yvar = "var1", plottype = "scatter",#
+  file = "plots/output/scatterplot.pdf")
+df
+head(df)
+df = data.frame(#
+  var1 = rnorm(n = n_obs, mean = 5, sd = 2),#
+  var2 = rnorm(n = n_obs, mean = 300, sd = 50),#
+  var3 = rbinom(n = n_obs, size = 1, prob = 0.2)#
+)
+head(df)
+write.csv(df, "create_data/output/data.csv")
+function_plot(df, xvar = "var2", yvar = "var1", plottype = "scatter",#
+  file = "plots/output/scatterplot.pdf")
+data=df
+xvar = "var2"
+yvar = "var1"
+p = ggplot(data, aes(x = xvar, y = yvar)) +#
+    geom_point()
+p
+# Function to make plots#
+function_plot = function(data, xvar, yvar, plottype, file){#
+#
+  plottitle = paste("Plot of", xvar, "and", yvar)#
+#
+  if(plottype == "scatter"){#
+#
+  p = ggplot(data, aes_string(x = xvar, y = yvar)) +#
+    geom_point() +#
+    theme_bw() +#
+    labs(title = plottitle)#
+#
+  } else if (plottype == "histogram"){#
+#
+  if(length(unique(data[, xvar])) != 2){warning("You are not using a binary xvar")}#
+#
+  p = ggplot(data, aes_string(x = xvar, y = yvar)) +#
+    geom_histogram() +#
+    theme_bw() +#
+    labs(title = plottitle)#
+#
+  } else {stop("You are using a wrong plottype: it must be 'scatter' or 'histogram'")}#
+#
+  # Save#
+  ggsave(file, p, width = 5, height = 5)#
+#
+}#
+#
+# Load data#
+df = read.csv("create_data/output/data.csv")#
+#
+# Produce 2 plots#
+function_plot(df, xvar = "var2", yvar = "var1", plottype = "scatter",#
+  file = "plots/output/scatterplot.pdf")
+function_plot(df, xvar = "var3", yvar = "var1", plottype = "histogram",#
+  file = "plots/output/histogram.pdf")
+df$var3
+data
+xvar
+yvar
+xvar="var3"
+if(length(unique(data[, xvar])) != 2){warning("You are not using a binary xvar")}
+p = ggplot(data, aes_string(x = xvar, y = yvar)) +#
+    geom_histogram()
+p
+# Working directory#
+setwd("~/Desktop/example_class")#
+#
+# Packages#
+library(ggplot2)#
+#
+# Function to make plots#
+function_plot = function(data, xvar, yvar = NULL, plottype, file){#
+#
+  plottitle = paste("Plot of", xvar, "and", yvar)#
+#
+  if(plottype == "scatter"){#
+#
+  p = ggplot(data, aes_string(x = xvar, y = yvar)) +#
+    geom_point() +#
+    theme_bw() +#
+    labs(title = plottitle)#
+#
+  } else if (plottype == "histogram"){#
+#
+  if(!is.null(yvar)){warning("Only one variable (xvar) is needed if you choose 'histogram'")}#
+#
+  p = ggplot(data, aes_string(x = xvar, y = yvar)) +#
+    geom_histogram() +#
+    theme_bw() +#
+    labs(title = plottitle)#
+#
+  } else {stop("You are using a wrong plottype: it must be 'scatter' or 'histogram'")}#
+#
+  # Save#
+  ggsave(file, p, width = 5, height = 5)#
+#
+}#
+#
+# Load data#
+df = read.csv("create_data/output/data.csv")#
+#
+# Produce 2 plots#
+function_plot(df, xvar = "var2", yvar = "var1", plottype = "scatter",#
+  file = "plots/output/scatterplot.pdf")#
+function_plot(df, xvar = "var3", plottype = "histogram",#
+  file = "plots/output/histogram.pdf")
+# Working directory#
+setwd("~/Desktop/example_class")#
+#
+# Packages#
+library(ggplot2)#
+#
+# Function to make plots#
+function_plot = function(data, xvar, yvar = NULL, plottype, file){#
+#
+  plottitle = paste("Plot of", xvar, "and", yvar)#
+#
+  if(plottype == "scatter"){#
+#
+  p = ggplot(data, aes_string(x = xvar, y = yvar)) +#
+    geom_point() +#
+    theme_bw() +#
+    labs(title = plottitle)#
+#
+  } else if (plottype == "histogram"){#
+#
+  if(!is.null(yvar)){warning("Only one variable (xvar) is needed if you choose 'histogram'")}#
+#
+  p = ggplot(data, aes_string(x = xvar)) +#
+    geom_histogram() +#
+    theme_bw() +#
+    labs(title = plottitle)#
+#
+  } else {stop("You are using a wrong plottype: it must be 'scatter' or 'histogram'")}#
+#
+  # Save#
+  ggsave(file, p, width = 5, height = 5)#
+#
+}#
+#
+# Load data#
+df = read.csv("create_data/output/data.csv")#
+#
+# Produce 2 plots#
+function_plot(df, xvar = "var2", yvar = "var1", plottype = "scatter",#
+  file = "plots/output/scatterplot.pdf")#
+function_plot(df, xvar = "var3", plottype = "histogram",#
+  file = "plots/output/histogram.pdf")
+# Working directory#
+setwd("~/Desktop/example_class")#
+#
+# Packages#
+library(ggplot2)#
+#
+# Function to make plots#
+function_plot = function(data, xvar, yvar = NULL, plottype, file){#
+#
+  plottitle = paste("Plot of", xvar, "and", yvar)#
+#
+  if(plottype == "scatter"){#
+#
+  p = ggplot(data, aes_string(x = xvar, y = yvar)) +#
+    geom_point() +#
+    theme_bw() +#
+    labs(title = plottitle)#
+#
+  } else if (plottype == "histogram"){#
+#
+  # Checks#
+  if(!is.null(yvar)){#
+    warning("Only one variable (xvar) is needed if you choose 'histogram'")#
+  }#
+  if(length(unique(data[, xvar])) != 2){#
+    warning("You are not using a binary xvar with 'histogram'")#
+  }#
+#
+  data[, xvar] = factor(data[, xvar])#
+#
+  p = ggplot(data, aes_string(x = xvar)) +#
+    geom_histogram() +#
+    theme_bw() +#
+    labs(title = plottitle)#
+#
+  } else {stop("You are using a wrong plottype: it must be 'scatter' or 'histogram'")}#
+#
+  # Save#
+  ggsave(file, p, width = 5, height = 5)#
+#
+}#
+#
+# Load data#
+df = read.csv("create_data/output/data.csv")#
+#
+# Produce 2 plots#
+function_plot(df, xvar = "var2", yvar = "var1", plottype = "scatter",#
+  file = "plots/output/scatterplot.pdf")#
+function_plot(df, xvar = "var3", plottype = "histogram",#
+  file = "plots/output/histogram.pdf")
+# Working directory#
+setwd("~/Desktop/example_class")#
+#
+# Packages#
+library(ggplot2)#
+#
+# Function to make plots#
+function_plot = function(data, xvar, yvar = NULL, plottype, file){#
+#
+  plottitle = paste("Plot of", xvar, "and", yvar)#
+#
+  if(plottype == "scatter"){#
+#
+  p = ggplot(data, aes_string(x = xvar, y = yvar)) +#
+    geom_point() +#
+    theme_bw() +#
+    labs(title = plottitle)#
+#
+  } else if (plottype == "histogram"){#
+#
+  # Checks#
+  if(!is.null(yvar)){#
+    warning("Only one variable (xvar) is needed if you choose 'histogram'")#
+  }#
+  if(length(unique(data[, xvar])) != 2){#
+    warning("You are not using a binary xvar with 'histogram'")#
+  }#
+#
+  data[, xvar] = factor(data[, xvar])#
+#
+  p = ggplot(data, aes_string(x = xvar)) +#
+    geom_histogram(stat = "count") +#
+    theme_bw() +#
+    labs(title = plottitle)#
+#
+  } else {stop("You are using a wrong plottype: it must be 'scatter' or 'histogram'")}#
+#
+  # Save#
+  ggsave(file, p, width = 5, height = 5)#
+#
+}#
+#
+# Load data#
+df = read.csv("create_data/output/data.csv")#
+#
+# Produce 2 plots#
+function_plot(df, xvar = "var2", yvar = "var1", plottype = "scatter",#
+  file = "plots/output/scatterplot.pdf")#
+function_plot(df, xvar = "var3", plottype = "histogram",#
+  file = "plots/output/histogram.pdf")
+# Working directory#
+setwd("~/Desktop/example_class")#
+#
+# Packages#
+library(ggplot2)#
+#
+# Function to make plots#
+function_plot = function(data, xvar, yvar = NULL, plottype, file){#
+#
+  if(plottype == "scatter"){#
+#
+    plottitle = paste("Plot of", xvar, "and", yvar)#
+#
+    p = ggplot(data, aes_string(x = xvar, y = yvar)) +#
+      geom_point() +#
+      theme_bw() +#
+      labs(title = plottitle)#
+#
+  } else if (plottype == "histogram"){#
+#
+    # Checks#
+    if(!is.null(yvar)){#
+      warning("Only one variable (xvar) is needed if you choose 'histogram'")#
+    }#
+    if(length(unique(data[, xvar])) != 2){#
+      warning("You are not using a binary xvar with 'histogram'")#
+    }#
+#
+    plottitle = paste("Plot of", xvar)#
+#
+    data[, xvar] = factor(data[, xvar])#
+#
+    p = ggplot(data, aes_string(x = xvar)) +#
+      geom_histogram(stat = "count") +#
+      theme_bw() +#
+      labs(title = plottitle)#
+#
+  } else {stop("You are using a wrong plottype: it must be 'scatter' or 'histogram'")}#
+#
+  # Save#
+  ggsave(file, p, width = 5, height = 5)#
+#
+}#
+#
+# Load data#
+df = read.csv("create_data/output/data.csv")#
+#
+# Produce 2 plots#
+function_plot(df, xvar = "var2", yvar = "var1", plottype = "scatter",#
+  file = "plots/output/scatterplot.pdf")#
+function_plot(df, xvar = "var3", plottype = "histogram",#
+  file = "plots/output/histogram.pdf")
+# Working directory#
+setwd("~/Desktop/example_class")#
+#
+# Packages#
+library(ggplot2)#
+#
+# Function to make plots#
+function_plot = function(data, xvar, yvar = NULL, plottype, file){#
+#
+  if(plottype == "scatter"){#
+#
+    plottitle = paste("Plot of", xvar, "and", yvar)#
+#
+    p = ggplot(data, aes_string(x = xvar, y = yvar)) +#
+      geom_point() +#
+      theme_bw() +#
+      labs(title = plottitle)#
+#
+  } else if (plottype == "histogram"){#
+#
+    # Checks#
+    if(!is.null(yvar)){#
+      warning("Only one variable (xvar) is needed if you choose 'histogram'")#
+    }#
+    if(length(unique(data[, xvar])) != 2){#
+      warning("You are not using a binary xvar with 'histogram'")#
+    }#
+#
+    plottitle = paste("Plot of", xvar)#
+#
+    data[, xvar] = factor(data[, xvar])#
+#
+    p = ggplot(data, aes_string(x = xvar)) +#
+      geom_bar(stat = "count") +#
+      theme_bw() +#
+      labs(title = plottitle)#
+#
+  } else {stop("You are using a wrong plottype: it must be 'scatter' or 'histogram'")}#
+#
+  # Save#
+  ggsave(file, p, width = 5, height = 5)#
+#
+}#
+#
+# Load data#
+df = read.csv("create_data/output/data.csv")#
+#
+# Produce 2 plots#
+function_plot(df, xvar = "var2", yvar = "var1", plottype = "scatter",#
+  file = "plots/output/scatterplot.pdf")#
+function_plot(df, xvar = "var3", plottype = "histogram",#
+  file = "plots/output/histogram.pdf")
+# Working directory#
+setwd("~/Desktop/example_class")#
+#
+# Packages#
+library(modelsummary)#
+#
+# Load data#
+df = read.csv("create_data/output/data.csv")#
+#
+# Model#
+m = lm(var1 ~ var2 + var3, data = df)
+# Working directory#
+setwd("~/Desktop/example_class")#
+#
+# Packages#
+library(modelsummary)#
+library(kableExtra)#
+#
+# Load data#
+df = read.csv("create_data/output/data.csv")#
+#
+# Models#
+m1 = lm(var1 ~ var2, data = df)#
+m2 = lm(var1 ~ var2 + var3, data = df)#
+model_list = list(m1, m2)#
+#
+# Model summary stuff#
+coef_recode = c(#
+  'var1' = 'Variable 1',#
+  'var2' = 'Variable 2',#
+  'var3' = 'Variable 3'#
+)#
+# Model table#
+modelsummary(#
+  models = model_list,#
+  output = "latex",#
+  estimate = "{estimate}{stars}",#
+  coef_map = coef_recode) %>%#
+save_kable(file = "analyses/output/table_models.tex")
+library(modelsummary)
