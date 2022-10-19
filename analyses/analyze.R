@@ -21,6 +21,12 @@ coef_recode = c(
 )
 
 
+## NOTE for 2023: show this
+# msummary(x, output = "markdown")
+# and perhaps parse it with pandoc,
+# but problem is we can't use \input{} in md
+
+
 # Model table
 modelsummary(
   models = model_list,
