@@ -1,5 +1,5 @@
 # Working directory
-setwd("~/Desktop/example_class")
+# setwd("~/Desktop/teaching_example")
 
 # Packages
 library(modelsummary)
@@ -19,13 +19,6 @@ coef_recode = c(
   'var2' = 'Variable 2',
   'var3' = 'Variable 3'
 )
-
-
-## NOTE for 2023: show this
-# msummary(x, output = "markdown")
-# and perhaps parse it with pandoc,
-# but problem is we can't use \input{} in md
-
 
 # Model table
 modelsummary(

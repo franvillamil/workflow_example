@@ -1,0 +1,379 @@
+\documentclass[aspectratio=43]{beamer}
+% \documentclass[aspectratio=169]{beamer}
+
+% Title --------------------------------------------
+\title[]{\huge Quantitative Research Workflow}
+\author[]{Francisco Villamil}
+\date[]{UC3M -- \today}
+
+\input{beamer_preamble.tex}
+
+\begin{document}
+% ====================================================
+
+% ----------------------------------------------------
+\begin{frame}
+  \titlepage
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Reason to think about a workflow}
+\centering
+
+\begin{itemize}
+  \item[1.] \textbf{Automate stuff:} you spend a lot of time on the computer so make it work for you
+  \item[2.] \textbf{Avoid errors:} we should not trust ourselves
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Problems}
+\centering
+
+\begin{itemize}[<+->] \small
+\setbeamercovered{transparent}
+  \item I revise a Word document too many times and end up with \texttt{final.docx}, \texttt{final2.docx}, \texttt{finalnov23.docx}, \texttt{finalFINAL.docx}
+  \item After four months, I go back to a data project and have one 5000-thousand R file that I completely do not understand anything of it
+  \item I run an old R file and suddenly it doesn't run because a file is missing - and I don't know where it is
+  \item The project is ready and instead of using data since 1991, I want to use data since 1989: do I have to run everything again?
+  \item I have a book or a dissertation (or a MA thesis) ready, with 60+ tables, and after it's ready, I found a little mistake that just changes the second decimal in the analyses tables - good luck updating all those tables
+  \item Mistake in the code because it doesn't tell me where it's wrong (Real: \href{https://journals.sagepub.com/doi/10.1177/20531680221126454}{journals.sagepub.com/doi/10.1177/20531680221126454})
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Principles}
+\centering
+
+\begin{enumerate}
+  \item Using computers
+  \begin{itemize}
+    \item Use \textit{plain text} files as much as possible
+    \item Customize your work tool
+    \item Use a code/text editor and make it \textit{yours}
+    \item Learn how to use the Terminal (unix commands) and automate
+    \item Use version control (git)
+  \end{itemize}
+  \item Coding and empirical projects
+  \begin{itemize}
+    \item Separate code in specific tasks, be tidy
+    \item Integrate different parts of same project (R, tex...)
+    \item \textbf{Automate output} (tables, plots ...)
+    \item Use \textbf{functions} (automate code), i.e. do not do the same thing twice
+    \item Checks and warnings in code
+    \item (Optional: consider using \textit{Makefile})
+  \end{itemize}
+  \begin{itemize}
+
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Some resources}
+\centering
+
+\begin{itemize}
+  \item Hadley Wickham's \href{http://adv-r.had.co.nz/Style.html}{R Style guide} (and the whole \href{http://adv-r.had.co.nz/}{Advanced R book} later on)
+  \item Software Carpentry's lessons: \href{https://software-carpentry.org/lessons/}{https://software-carpentry.org/lessons/}
+  \begin{itemize}
+    \item Especially \href{https://swcarpentry.github.io/shell-novice/}{Unix Shell} and \href{https://swcarpentry.github.io/git-novice/}{Version Control with Git}
+  \end{itemize}
+  \item Kieran Healy's \textit{The Plain Person’s Guide to Plain Text Social Science}: \href{https://plain-text.co/}{https://plain-text.co/}
+  \begin{itemize}
+    \item Although \texttt{emacs} is perhaps a bit too hardcore
+  \end{itemize}
+  \item The best Git course I know is this: \href{https://gitexercises.fracz.com/}{https://gitexercises.fracz.com/}
+  \item MIT's \textit{The Missing Semester of Your CS Education}: \href{https://missing.csail.mit.edu/}{https://missing.csail.mit.edu/}
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+\section{Using computers}
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Plain text}
+\centering
+
+\begin{itemize}
+  \item What's plain text?
+  \item Quicker and easier to work with
+  \item Cross-platform and does not depend on proprietary software
+  \item Much better for the things you want to do
+  \begin{itemize}
+    \item You can use version control on it
+    \item Closer to how machines work it - so easier for whatever related to machines (e.g. syncing two computers) $\rightarrow$ \href{https://github.com/franvillamil/configfiles}{example1}, \href{https://github.com/franvillamil/sublime_settings}{example2}
+    \item It's a base ingredient you can convert into whatever (e.g. with \texttt{R}, \texttt{LaTeX}, etc)
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Customizing your computer}
+\centering
+
+\begin{itemize}
+  \item \href{https://franvillamil.github.io/posts/setup_macos.html}{https://franvillamil.github.io/posts/setup_macos.html}
+  \item \href{https://github.com/franvillamil/templates}{https://github.com/franvillamil/templates}
+  \item \href{https://github.com/franvillamil/configfiles}{https://github.com/franvillamil/configfiles}
+  \item Examples: mdtopdf/docxtopdf, baserepos, Spectacle, ...
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Code editor}
+\centering
+
+\begin{itemize}
+  \item Choose and get used to some code editor
+  \begin{itemize}
+    \item You're probably using the editor in \texttt{RStudio}, that's fine, but there are reasons to use better and more general tools
+  \end{itemize}
+  \item You can customize these so suit your needs, e.g.:
+  \begin{itemize}
+    \item Edit \& run languages you use (\texttt{R}, \texttt{Latex}, whatever)
+    \item Small stuff that saves time, like snippets
+    \item Navigate a project
+    \item And much more complicated stuff we're not going to talk about and that I do not know so much about
+  \end{itemize}
+  \item I use Sublime Text: \href{https://www.sublimetext.com/}{https://www.sublimetext.com/}
+  \item Anyway, \textbf{don't use MS Word} (as much as possible)
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Using the command line}
+\centering
+
+\begin{itemize}
+  \item Think of it as the language to communicate with the OS
+  \item No need that you become a computer wizard, but I personally think it pays off to learn a little bit
+  \item Why?
+  \begin{itemize}
+    \item Automate stuff in the computer (e.g. from updating local files to converting .docx into pdf)
+    \item Navigate and work with files faster
+    \item Version control, installing stuff, solving issues
+    \item Virtual machines
+  \end{itemize}
+  \item \textbf{Note:} Unix/Mac vs Windows
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Version control (Git)}
+\centering
+
+\begin{itemize}[<+->]
+  \item \texttt{final1.docx}, \texttt{finalfinal.docx}... but in a proper way
+  \item You want to keep control of all versions of a file, something like MS Word's `Tracked changes' but just much better
+  \begin{itemize}
+    \item Keep a time machine of all versions of a file
+    \item Allow collaboration between different people (or between two computers)
+  \end{itemize}
+  \item There is more than one system, but most people use \texttt{Git} (and Github)
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Version control}
+\centering
+
+\includegraphics[width = \textwidth]{img/gitesquema}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Version control}
+\centering
+
+\includegraphics[width = \textwidth]{img/git-basic}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Version control - a note}
+\centering
+
+\begin{itemize}
+  \item Version control works \textbf{much} better if you work with other people who also use version control, which is often not the case (at least not mine)
+  \item Yet, there are two advantages to use it in my view:
+  \begin{itemize}
+    \item Obvious one: keep older versions of a file
+    \item If you work with two computers, perhaps Google Drive/Dropbox do not work that well
+    \item Virtual machines (e.g. Google Cloud Computing, Amazon Web Services)
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+\section{Coding better and organizing data projects}
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Coding projects: tasks as folders}
+\centering
+
+\begin{itemize}
+  \item This applies especially to the R part of projects
+  \item Do not create one huge R code file, use different files for different tasks
+  \item You want to do the same with the folder structure
+  \begin{itemize}
+    \item \textbf{Especially with R output!}
+  \end{itemize}
+  \item (Optionally, you can use \textit{Makefile}, but it can be problematic)
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Coding projects: tasks as folders}
+\centering
+
+\includegraphics[width = \textwidth]{img/workflow_vox_streets}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Coding projects extra: filenaming}
+\centering
+
+\begin{itemize}
+  \item Not a lot of things here, but just think about how you name files or folders
+  \item[1.] Do not use spaces
+  \item[2.] Ideally use some standards (e.g. \texttt{1_clean-file.R}, \texttt{2_merge.R} ...)
+  \item \textbf{{\color{red}{DON'T:}}} \texttt{First file.csv}, \textbf{definitely not:} \texttt{Datos educación.csv}
+  \begin{itemize}
+    \item good: \texttt{first_file.csv}, \texttt{datos_educacion.csv} etc
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Coding projects, extra: integrate}
+\centering
+
+\begin{itemize}
+  \item Put together \texttt{Latex} and \texttt{R} parts (and/or Python, etc)
+  \item If you organize the folder as I said before, it's pretty much solved
+  \item Overleaf example
+  \item What you get with this? Avoid mistakes, makes your life easier...
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Coding projects, extra: Makefile}
+\centering
+
+\begin{itemize}
+  \item Example
+  \item \href{https://makefiletutorial.com/}{https://makefiletutorial.com/}
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Writing code I: automate via functions}
+\centering
+
+
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Writing code II: write checks and warnings}
+\centering
+
+\begin{itemize}
+  \item As you write code, always write checks using \texttt{stop()} or \texttt{warning()}, e.g.:
+  \begin{itemize}
+    \item if a new data frame is built from merging, what should be the number of rows in the final df? or columns?
+    \item should two objects be identical?
+    \item do we have duplicated values by some ID?
+    \item do you expect \texttt{``145``} or \texttt{145} (character vs integer)?
+    \item ...
+    \item[]
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\imageframe{img/stop1}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\imageframe{img/stop2}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Writing code II: write checks and warnings}
+\centering
+
+\begin{itemize}
+\item Also try to minimize errors, e.g. that you have visuals of real output, e.g.:
+\item[1.] I use \texttt{print()} all the time to show length of stuff, number of missing data, etc
+\item[2.] \texttt{modelsummary} vs \texttt{stargazer} example
+  \begin{itemize}
+    \item \href{https://journals.sagepub.com/doi/10.1177/20531680221126454}{journals.sagepub.com/doi/10.1177/20531680221126454}
+    \item \href{https://github.com/franvillamil/streets_vox/blob/master/robust/rob.R}{github.com/franvillamil/streets\_vox/blob/master/robust/rob.R}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+%\appendix
+%\renewcommand{\theframenumber}{A\arabic{framenumber}}
+%\renewcommand{\insertframenumber}{A\arabic{framenumber}}
+
+% ====================================================
+\end{document}

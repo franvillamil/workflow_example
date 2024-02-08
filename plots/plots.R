@@ -1,5 +1,5 @@
 # Working directory
-setwd("~/Desktop/example_class")
+# setwd("~/Desktop/teaching_example")
 
 # Packages
 library(ggplot2)

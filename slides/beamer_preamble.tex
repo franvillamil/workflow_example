@@ -1,0 +1,296 @@
+%%% NOTE -- CHECK THIS: https://github.com/paulgp/beamer-tips
+
+
+%%% Building heavily on https://github.com/kylebutts/templates
+
+% xcolor, define them
+\usepackage{xcolor}
+
+% TEXT COLORS
+\definecolor{red}{HTML}{9a2515}
+\definecolor{yellow}{HTML}{EBC944}
+\definecolor{asher}{HTML}{555F61}
+\definecolor{jet}{HTML}{131516}
+
+% THEME COLORS
+\definecolor{accent}{HTML}{107895}
+\definecolor{accent2}{HTML}{9a2515}
+
+% Color commands
+\newcommand\red[1]{{\color{red}#1}}
+\newcommand\yellow[1]{{\color{yellow}#1}}
+\newcommand\asher[1]{{\color{asher}#1}}
+
+\newcommand\BGred[1]{{\colorbox{red!80!white}{#1}}}
+\newcommand\BGyellow[1]{{\colorbox{yellow!80!white}{#1}}}
+\newcommand\BGasher[1]{{\colorbox{asher!80!white}{#1}}}
+
+% to use only in some slides
+\renewcommand<>{\BGyellow}[1]{\only#2{\beameroriginal{\BGyellow}}{#1}}
+
+% Appendix numbering
+\usepackage{appendixnumberbeamer}
+% Math equations
+\usepackage{amsmath}
+
+% Beamer Options -------------------------------------
+
+% Background
+\setbeamercolor{background canvas}{bg = white}
+
+% Change text margins
+\setbeamersize{text margin left = 25pt, text margin right = 15pt}
+
+% \alert
+\setbeamercolor{alerted text}{fg = accent2}
+
+% Frame title
+\setbeamercolor{frametitle}{bg = white, fg = jet}
+\setbeamercolor{framesubtitle}{bg = white, fg = accent}
+\setbeamerfont{framesubtitle}{size = \small, shape = \itshape}
+
+% Block
+\setbeamercolor{block title}{fg = white, bg = accent2}
+\setbeamercolor{block body}{fg = jet, bg = jet!10!white}
+
+% Title page
+\setbeamercolor{title}{fg = jet}
+\setbeamercolor{subtitle}{fg = accent}
+
+%% Custom \maketitle and \titlepage
+\setbeamertemplate{title page}
+{
+    \begin{centering}
+      % \vspace{20mm}
+      {\Large \usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle}\\ \vskip0.25em%
+      \ifx\insertsubtitle\@empty%
+      \else%
+        {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
+      \fi%
+      {\vspace{10mm}\insertauthor}\\
+      \ifx\insertinstitute\@empty%
+      \else%
+        {\vspace{5mm}\color{asher}\scriptsize{\insertinstitute}}\\\vspace{5mm}
+      \fi%
+      {\color{asher}\small{\insertdate}}\\
+    \end{centering}
+}
+
+% Table of Contents
+\setbeamercolor{section in toc}{fg = accent!70!jet}
+\setbeamercolor{subsection in toc}{fg = jet}
+
+% Button
+\setbeamercolor{button}{bg = accent}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% Table and Figure captions
+\setbeamercolor{caption}{fg=jet!70!white}
+\setbeamercolor{caption name}{fg=jet}
+\setbeamerfont{caption name}{shape = \itshape}
+
+% Put slide number / total slides at the bottom right
+\makeatother
+\makeatletter
+\setbeamertemplate{footline} %{\hfill\insertframenumber/\inserttotalframenumber}
+{%
+  \leavevmode%
+  \hbox{
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.3cm plus1fil]{footlinecolor}%
+    \color{asher}{{\let\hyperlink\@secondoftwo\insertshorttitle}\hfill\insertshortauthor\hfill\insertshortdate\hfill\insertframenumber/\inserttotalframenumber}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
+\makeatletter
+
+% Bullet points
+
+%% Fix left-margins
+\settowidth{\leftmargini}{\usebeamertemplate{itemize item}}
+\addtolength{\leftmargini}{\labelsep}
+
+%% enumerate item color
+\setbeamercolor{enumerate item}{fg = accent}
+\setbeamerfont{enumerate item}{size = \small}
+\setbeamertemplate{enumerate item}{\insertenumlabel.}
+
+%% itemize
+\setbeamercolor{itemize item}{fg = accent!70!white}
+\setbeamerfont{itemize item}{size = \small}
+\setbeamertemplate{itemize item}[circle]
+\setlength{\itemsep}{0pt plus 6pt}
+
+%% right arrow for subitems
+\setbeamercolor{itemize subitem}{fg = accent!60!white}
+\setbeamerfont{itemize subitem}{size = \small}
+\setbeamertemplate{itemize subitem}{$\rightarrow$}
+
+\setbeamertemplate{itemize subsubitem}[square]
+\setbeamercolor{itemize subsubitem}{fg = jet}
+\setbeamerfont{itemize subsubitem}{size = \small}
+
+% References
+
+%% Bibliography Font, roughly matching aea
+\setbeamerfont{bibliography item}{size = \footnotesize}
+\setbeamerfont{bibliography entry author}{size = \footnotesize, series = \bfseries}
+\setbeamerfont{bibliography entry title}{size = \footnotesize}
+\setbeamerfont{bibliography entry location}{size = \footnotesize, shape = \itshape}
+\setbeamerfont{bibliography entry note}{size = \footnotesize}
+
+\setbeamercolor{bibliography item}{fg = jet}
+\setbeamercolor{bibliography entry author}{fg = accent!60!jet}
+\setbeamercolor{bibliography entry title}{fg = jet}
+\setbeamercolor{bibliography entry location}{fg = jet}
+\setbeamercolor{bibliography entry note}{fg = jet}
+
+%% Remove bibliography symbol in slides
+\setbeamertemplate{bibliography item}{}
+
+
+
+
+
+% Links ----------------------------------------------
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks = true,
+  linkcolor = accent2,
+  filecolor = accent2,
+  urlcolor = accent2,
+  citecolor = accent2,
+}
+
+
+% Line spacing --------------------------------------
+\usepackage{setspace}
+\setstretch{1.2}
+
+
+% \begin{columns} -----------------------------------
+\usepackage{multicol}
+
+
+% % Fonts ---------------------------------------------
+% % Beamer Option to use custom fonts
+% \usefonttheme{professionalfonts}
+%
+% % \usepackage[utopia, smallerops, varg]{newtxmath}
+% % \usepackage{utopia}
+% \usepackage[sfdefault,light]{roboto}
+%
+% % Small adjustments to text kerning
+% \usepackage{microtype}
+
+
+
+% Remove annoying over-full box warnings -----------
+\vfuzz2pt
+\hfuzz2pt
+
+
+% Table of Contents with Sections
+\setbeamerfont{myTOC}{series=\bfseries, size=\Large}
+\AtBeginSection[]{
+        \frame{
+            \frametitle{Roadmap}
+            \tableofcontents[current]
+        }
+    }
+
+
+% References ----------------------------------------
+\usepackage[
+    citestyle= authoryear,
+    style = authoryear,
+    natbib = true,
+    backend = biber
+]{biblatex}
+
+% Smaller font-size for references
+\renewcommand*{\bibfont}{\small}
+
+% Remove "In:"
+\renewbibmacro{in:}{}
+
+% Color citations for slides
+\newenvironment{citecolor}
+    {\footnotesize\begin{color}{accent2}}
+    {\end{color}}
+
+\newcommand{\citetcolor}[1]{{\footnotesize\textcolor{asher}{\citet{#1}}}}
+\newcommand{\citepcolor}[1]{{\footnotesize\textcolor{asher}{\citep{#1}}}}
+
+% Tables -------------------------------------------
+% Tables too big
+% \begin{adjustbox}{width = 1.2\textwidth, center}
+\usepackage{adjustbox}
+\usepackage{array}
+\usepackage{threeparttable, booktabs, adjustbox}
+
+% Fix \input with tables
+% \input fails when \\ is at end of external .tex file
+
+\makeatletter
+\let\input\@@input
+\makeatother
+
+% Tables too narrow
+% \begin{tabularx}{\linewidth}{cols}
+% col-types: X - center, L - left, R -right
+% Relative scale: >{\hsize=.8\hsize}X/L/R
+\usepackage{tabularx}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+% Figures
+
+% \imageframe{img_name} -----------------------------
+% from https://github.com/mattjetwell/cousteau
+\newcommand{\imageframe}[1]{%
+    \begin{frame}[plain]
+        \begin{tikzpicture}[remember picture, overlay]
+            \node[at = (current page.center), xshift = 0cm] (cover) {%
+                \includegraphics[keepaspectratio, width=\paperwidth, height=\paperheight]{#1}
+            };
+        \end{tikzpicture}
+    \end{frame}%
+}
+
+% subfigures
+\usepackage{subfigure}
+
+
+% Highlight slide -----------------------------------
+% \begin{transitionframe} Text \end{transitionframe}
+% from paulgp's beamer tips
+\newenvironment{transitionframe}{
+    \setbeamercolor{background canvas}{bg=accent!60!black}
+    \begin{frame}\color{accent!10!white}\LARGE\centering
+}{
+    \end{frame}
+}
+
+
+% Table Highlighting --------------------------------
+% Create top-left and bottom-right markets in tabular cells with a unique matching id and these commands will outline those cells
+\usepackage[beamer,customcolors]{hf-tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{fit,shapes.misc}
+
+% To set the hypothesis highlighting boxes red.
+\newcommand\marktopleft[1]{%
+    \tikz[overlay,remember picture]
+        \node (marker-#1-a) at (0,1.5ex) {};%
+}
+\newcommand\markbottomright[1]{%
+    \tikz[overlay,remember picture]
+        \node (marker-#1-b) at (0,0) {};%
+    \tikz[accent!80!jet, ultra thick, overlay, remember picture, inner sep=4pt]
+        \node[draw, rectangle, fit=(marker-#1-a.center) (marker-#1-b.center)] {};%
+}
