@@ -1,7 +1,7 @@
 # Working directory
 setwd("~/Desktop/example_class")
 
-# Constants
+# Constants: always define them once only
 n_obs = 5000
 
 # Create data
