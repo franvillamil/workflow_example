@@ -19,7 +19,25 @@
 
 % ----------------------------------------------------
 \begin{frame}
-\frametitle{Reason to think about a workflow}
+\frametitle{Thinking about workflow}
+\centering
+
+\begin{itemize}
+  \item How you organize your coding projects: data, output, integration between different things (e.g. R and Latex)
+  \begin{itemize}
+    \item (Note on R Markdown)
+  \end{itemize}
+  \item How to code better
+  \item Learning how to use a computer properly
+ \end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+  
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Why?}
 \centering
 
 \begin{itemize}
@@ -35,14 +53,17 @@
 \frametitle{Problems}
 \centering
 
-\begin{itemize}[<+->] \small
+\begin{itemize}
 \setbeamercovered{transparent}
-  \item I revise a Word document too many times and end up with \texttt{final.docx}, \texttt{final2.docx}, \texttt{finalnov23.docx}, \texttt{finalFINAL.docx}
-  \item After four months, I go back to a data project and have one 5000-thousand R file that I completely do not understand anything of it
-  \item I run an old R file and suddenly it doesn't run because a file is missing - and I don't know where it is
-  \item The project is ready and instead of using data since 1991, I want to use data since 1989: do I have to run everything again?
-  \item I have a book or a dissertation (or a MA thesis) ready, with 60+ tables, and after it's ready, I found a little mistake that just changes the second decimal in the analyses tables - good luck updating all those tables
-  \item Mistake in the code because it doesn't tell me where it's wrong (Real: \href{https://journals.sagepub.com/doi/10.1177/20531680221126454}{journals.sagepub.com/doi/10.1177/20531680221126454})
+  \item<1-> Version control: \texttt{final.docx}, \texttt{final2.docx}, \texttt{finalFINAL.docx}
+  \item<2-> Going back to old (or not so old) projects and...
+  \begin{itemize}
+    \item change something in one 5000-line R file
+    \item doesn't run because file is missing, where's the file?
+    \item need to change some \textit{constant} and spend a whole day looking for it
+  \end{itemize}
+  \item<3-> Re-running versions of graphs and tables in the final dissertation
+  \item<4-> Avoiding this things: \href{https://journals.sagepub.com/doi/10.1177/20531680221126454}{journals.sagepub.com/doi/10.1177/20531680221126454}
 \end{itemize}
 
 \end{frame}
@@ -50,35 +71,20 @@
 
 % ----------------------------------------------------
 \begin{frame}
-\frametitle{Principles}
+\frametitle{Main ideas}
 \centering
 
-\begin{enumerate}
-  \item Using computers
-  \begin{itemize}
-    \item Use \textit{plain text} files as much as possible
-    \item Customize your work tool
-    \item Use a code/text editor and make it \textit{yours}
-    \item Learn how to use the Terminal (unix commands) and automate
-    \item Use version control (git)
-  \end{itemize}
-  \item Coding and empirical projects
-  \begin{itemize}
-    \item Separate code in specific tasks, be tidy
-    \item Integrate different parts of same project (R, tex...)
-    \item \textbf{Automate output} (tables, plots ...)
-    \item Use \textbf{functions} (automate code), i.e. do not do the same thing twice
-    \item Checks and warnings in code
-    \item (Optional: consider using \textit{Makefile})
-  \end{itemize}
-  \begin{itemize}
-
-  \end{itemize}
+\begin{itemize}
+  \item[1.] Working with \textbf{plain text} files
+  \item[2.] Organizing coding and empirical projects
+  \item[3.] Coding better (automating, defining constants, checks \& warnings...)
+  \item[4.] Use version control (git)
+  \item[5.] Use your tools better: learn some command line, customize computer, choose a text editor...
 \end{itemize}
 
 \end{frame}
 % ----------------------------------------------------
-
+  
 % ----------------------------------------------------
 \begin{frame}
 \frametitle{Some resources}
@@ -86,16 +92,172 @@
 
 \begin{itemize}
   \item Hadley Wickham's \href{http://adv-r.had.co.nz/Style.html}{R Style guide} (and the whole \href{http://adv-r.had.co.nz/}{Advanced R book} later on)
-  \item Software Carpentry's lessons: \href{https://software-carpentry.org/lessons/}{https://software-carpentry.org/lessons/}
-  \begin{itemize}
-    \item Especially \href{https://swcarpentry.github.io/shell-novice/}{Unix Shell} and \href{https://swcarpentry.github.io/git-novice/}{Version Control with Git}
-  \end{itemize}
-  \item Kieran Healy's \textit{The Plain Person’s Guide to Plain Text Social Science}: \href{https://plain-text.co/}{https://plain-text.co/}
+    \item Kieran Healy's \textit{The Plain Person’s Guide to Plain Text Social Science}: \href{https://plain-text.co/}{https://plain-text.co/}
   \begin{itemize}
     \item Although \texttt{emacs} is perhaps a bit too hardcore
   \end{itemize}
   \item The best Git course I know is this: \href{https://gitexercises.fracz.com/}{https://gitexercises.fracz.com/}
   \item MIT's \textit{The Missing Semester of Your CS Education}: \href{https://missing.csail.mit.edu/}{https://missing.csail.mit.edu/}
+  \item Software Carpentry's lessons: \href{https://software-carpentry.org/lessons/}{https://software-carpentry.org/lessons/}
+  \begin{itemize}
+    \item Especially \href{https://swcarpentry.github.io/shell-novice/}{Unix Shell} and \href{https://swcarpentry.github.io/git-novice/}{Version Control with Git}
+  \end{itemize}
+  \item \href{https://github.com/franvillamil/workflow_example}{\textbf{github.com/franvillamil/workflow\_example}}
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{What is \textbf{plain text}?}
+\centering
+
+% ----------------------------------------------------
+\includegraphics[width = 0.5\textwidth]{img/xkcd}
+% ----------------------------------------------------
+  
+
+\end{frame}
+% ----------------------------------------------------
+  
+
+\section{Coding better and organizing data projects}
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Coding projects: tasks as folders}
+\centering
+
+\begin{itemize}
+  \item This applies especially to the R part of projects
+  \item Do not create one huge R code file, use different files for different tasks
+  \item You want to do the same with the folder structure
+  \begin{itemize}
+    \item \textbf{Especially with R output!}
+  \end{itemize}
+  \item (Optionally, you can use \textit{Makefile}, but it can be problematic)
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Coding projects: tasks as folders}
+\centering
+
+\includegraphics[width = \textwidth]{img/workflow_vox_streets}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Coding projects extra: filenaming}
+\centering
+
+\begin{itemize}
+  \item Not a lot of things here, but just think about how you name files or folders
+  \item[1.] Do not use spaces
+  \item[2.] Ideally use some standards (e.g. \texttt{1\_clean-file.R}, \texttt{2\_merge.R} ...)
+  \item \textbf{{\color{red}{DON'T:}}} \texttt{First file.csv}, \textbf{definitely not:} \texttt{Datos educación.csv}
+  \begin{itemize}
+    \item good: \texttt{first\_file.csv}, \texttt{datos\_educacion.csv} etc
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Coding projects, extra: integrate}
+\centering
+
+\begin{itemize}
+  \item Put together \texttt{Latex} and \texttt{R} parts (and/or Python, etc)
+  \item If you organize the folder as I said before, it's pretty much solved
+  \item Overleaf example
+  \item What you get with this? Avoid mistakes, makes your life easier...
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Coding projects, extra: Makefile}
+\centering
+
+\begin{itemize}
+  \item Example
+  \item \href{https://makefiletutorial.com/}{https://makefiletutorial.com/}
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Writing code I: automate via functions}
+\centering
+
+\begin{itemize}
+  \item Main idea: you should not write the same code \textit{twice}
+  \item Use functions to automate everything: producing plots, analyses (e.g. predicted probabilities), recurrent actions, etc
+  \item Why? Avoids mistakes, easier to debug, cleaner files
+  \item Examples:
+  \begin{itemize}
+    \item \href{github.com/franvillamil/ethnicity_vox/tree/master/func}{https://github.com/franvillamil/ethnicity\_africa/tree/master/func}
+    \item \href{github.com/franvillamil/streets_vox/tree/master/func}{https://github.com/franvillamil/streets\_vox/tree/master/func}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Writing code II: write checks and warnings}
+\centering
+
+\begin{itemize}
+  \item As you write code, always write checks using \texttt{stop()} or \texttt{warning()}, e.g.:
+  \begin{itemize}
+    \item if a new data frame is built from merging, what should be the number of rows in the final df? or columns?
+    \item should two objects be identical?
+    \item do we have duplicated values by some ID?
+    \item do you expect \texttt{``145``} or \texttt{145} (character vs integer)?
+    \item ...
+    \item[]
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\imageframe{img/stop1}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\imageframe{img/stop2}
+% ----------------------------------------------------
+
+% ----------------------------------------------------
+\begin{frame}
+\frametitle{Writing code II: write checks and warnings}
+\centering
+
+\begin{itemize}
+\item Also try to minimize errors, e.g. that you have visuals of real output, e.g.:
+\item[1.] I use \texttt{print()} all the time to show length of stuff, number of missing data, etc
+\item[2.] \texttt{modelsummary} vs \texttt{stargazer} example
+  \begin{itemize}
+    \item \href{https://journals.sagepub.com/doi/10.1177/20531680221126454}{journals.sagepub.com/doi/10.1177/20531680221126454}
+    \item \href{https://github.com/franvillamil/streets_vox/blob/master/robust/rob.R}{github.com/franvillamil/streets\_vox/blob/master/robust/rob.R}
+  \end{itemize}
 \end{itemize}
 
 \end{frame}
@@ -109,7 +271,6 @@
 \centering
 
 \begin{itemize}
-  \item What's plain text?
   \item Quicker and easier to work with
   \item Cross-platform and does not depend on proprietary software
   \item Much better for the things you want to do
@@ -129,7 +290,7 @@
 \centering
 
 \begin{itemize}
-  \item \href{https://franvillamil.github.io/posts/setup_macos.html}{https://franvillamil.github.io/posts/setup_macos.html}
+  \item \href{https://franvillamil.github.io/posts/setup_macos.html}{https://franvillamil.github.io/posts/setup\_macos.html}
   \item \href{https://github.com/franvillamil/templates}{https://github.com/franvillamil/templates}
   \item \href{https://github.com/franvillamil/configfiles}{https://github.com/franvillamil/configfiles}
   \item Examples: mdtopdf/docxtopdf, baserepos, Spectacle, ...
@@ -233,138 +394,6 @@
     \item Obvious one: keep older versions of a file
     \item If you work with two computers, perhaps Google Drive/Dropbox do not work that well
     \item Virtual machines (e.g. Google Cloud Computing, Amazon Web Services)
-  \end{itemize}
-\end{itemize}
-
-\end{frame}
-% ----------------------------------------------------
-
-\section{Coding better and organizing data projects}
-
-% ----------------------------------------------------
-\begin{frame}
-\frametitle{Coding projects: tasks as folders}
-\centering
-
-\begin{itemize}
-  \item This applies especially to the R part of projects
-  \item Do not create one huge R code file, use different files for different tasks
-  \item You want to do the same with the folder structure
-  \begin{itemize}
-    \item \textbf{Especially with R output!}
-  \end{itemize}
-  \item (Optionally, you can use \textit{Makefile}, but it can be problematic)
-\end{itemize}
-
-\end{frame}
-% ----------------------------------------------------
-
-% ----------------------------------------------------
-\begin{frame}
-\frametitle{Coding projects: tasks as folders}
-\centering
-
-\includegraphics[width = \textwidth]{img/workflow_vox_streets}
-
-\end{frame}
-% ----------------------------------------------------
-
-% ----------------------------------------------------
-\begin{frame}
-\frametitle{Coding projects extra: filenaming}
-\centering
-
-\begin{itemize}
-  \item Not a lot of things here, but just think about how you name files or folders
-  \item[1.] Do not use spaces
-  \item[2.] Ideally use some standards (e.g. \texttt{1_clean-file.R}, \texttt{2_merge.R} ...)
-  \item \textbf{{\color{red}{DON'T:}}} \texttt{First file.csv}, \textbf{definitely not:} \texttt{Datos educación.csv}
-  \begin{itemize}
-    \item good: \texttt{first_file.csv}, \texttt{datos_educacion.csv} etc
-  \end{itemize}
-\end{itemize}
-
-\end{frame}
-% ----------------------------------------------------
-
-% ----------------------------------------------------
-\begin{frame}
-\frametitle{Coding projects, extra: integrate}
-\centering
-
-\begin{itemize}
-  \item Put together \texttt{Latex} and \texttt{R} parts (and/or Python, etc)
-  \item If you organize the folder as I said before, it's pretty much solved
-  \item Overleaf example
-  \item What you get with this? Avoid mistakes, makes your life easier...
-\end{itemize}
-
-\end{frame}
-% ----------------------------------------------------
-
-% ----------------------------------------------------
-\begin{frame}
-\frametitle{Coding projects, extra: Makefile}
-\centering
-
-\begin{itemize}
-  \item Example
-  \item \href{https://makefiletutorial.com/}{https://makefiletutorial.com/}
-\end{itemize}
-
-\end{frame}
-% ----------------------------------------------------
-
-% ----------------------------------------------------
-\begin{frame}
-\frametitle{Writing code I: automate via functions}
-\centering
-
-
-
-\end{frame}
-% ----------------------------------------------------
-
-% ----------------------------------------------------
-\begin{frame}
-\frametitle{Writing code II: write checks and warnings}
-\centering
-
-\begin{itemize}
-  \item As you write code, always write checks using \texttt{stop()} or \texttt{warning()}, e.g.:
-  \begin{itemize}
-    \item if a new data frame is built from merging, what should be the number of rows in the final df? or columns?
-    \item should two objects be identical?
-    \item do we have duplicated values by some ID?
-    \item do you expect \texttt{``145``} or \texttt{145} (character vs integer)?
-    \item ...
-    \item[]
-  \end{itemize}
-\end{itemize}
-
-\end{frame}
-% ----------------------------------------------------
-
-% ----------------------------------------------------
-\imageframe{img/stop1}
-% ----------------------------------------------------
-
-% ----------------------------------------------------
-\imageframe{img/stop2}
-% ----------------------------------------------------
-
-% ----------------------------------------------------
-\begin{frame}
-\frametitle{Writing code II: write checks and warnings}
-\centering
-
-\begin{itemize}
-\item Also try to minimize errors, e.g. that you have visuals of real output, e.g.:
-\item[1.] I use \texttt{print()} all the time to show length of stuff, number of missing data, etc
-\item[2.] \texttt{modelsummary} vs \texttt{stargazer} example
-  \begin{itemize}
-    \item \href{https://journals.sagepub.com/doi/10.1177/20531680221126454}{journals.sagepub.com/doi/10.1177/20531680221126454}
-    \item \href{https://github.com/franvillamil/streets_vox/blob/master/robust/rob.R}{github.com/franvillamil/streets\_vox/blob/master/robust/rob.R}
   \end{itemize}
 \end{itemize}
 

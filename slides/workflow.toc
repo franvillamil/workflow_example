@@ -1,5 +1,0 @@
-\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
-\defcounter {refsection}{0}\relax 
-\beamer@sectionintoc {1}{Using computers}{11}{0}{1}
-\defcounter {refsection}{0}\relax 
-\beamer@sectionintoc {2}{Coding better and organizing data projects}{24}{0}{2}
