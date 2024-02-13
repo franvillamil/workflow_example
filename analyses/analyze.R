@@ -1,5 +1,5 @@
 # Working directory
-# setwd("~/Desktop/teaching_example")
+# setwd("~/Desktop/workflow_example")
 
 # Packages
 library(modelsummary)

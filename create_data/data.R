@@ -1,8 +1,8 @@
 # Working directory
-setwd("~/Desktop/example_class")
+# setwd("~/Desktop/workflow_example")
 
 # Constants: always define them once only
-n_obs = 5000
+n_obs = 1000
 
 # Create data
 df = data.frame(
